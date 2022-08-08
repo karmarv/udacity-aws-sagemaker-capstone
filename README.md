@@ -5,7 +5,10 @@ udacity AWS Sagemaker Tuutorial Capstone project
 
 ###  Tasks
 
-- [ ] Setup Dataset and sample 100 images for each sample
+- [ ] Setup Dataset
+    - Sample 100 images for bicycle and person in image
+    - Use the same class_ids as in COCO_CLASSES. Provide additional class identifier or label `cyclist` where both exist with IoU>0.25. 
+    - Split it 70:20:10 in Train/Test/Val annotations
 - [ ] Training Loader updates
 - [ ] Train the model 
 - [ ] Test & Evaluate model
@@ -13,6 +16,7 @@ udacity AWS Sagemaker Tuutorial Capstone project
 - 
 
 ### A. Setup [Training Dataset](https://yolox.readthedocs.io/en/latest/train_custom_data.html)
+- Download the [mini coco128.zip dataset](https://github.com/karmarv/udacity-aws-sagemaker-capstone/tree/main/samples/coco128.zip)
 - Setup Dataset loader with `cyclist`,`person`,`bicycle` class
     - Customize the [yolox/data/datasets/coco.py](https://github.com/Megvii-BaseDetection/YOLOX/blob/main/yolox/data/datasets/coco.py) to load the classess and images of interest [`/data/datasets/coco_cyclist.py`](./YOLOX/yolox/data/datasets/coco_cyclist.py)
 - Create experiment file to control data loading and model training [`/exps/default/yolox_nano_custom.py`](./YOLOX/exps/default/yolox_nano_custom.py)
@@ -33,7 +37,7 @@ udacity AWS Sagemaker Tuutorial Capstone project
         ```
 - Install [YoloX](https://github.com/Megvii-BaseDetection/YOLOX/)
     -   ```bash
-        git clone https://github.com/Megvii-BaseDetection/YOLOX
+        git clone --recurse-submodules https://github.com/karmarv/udacity-aws-sagemaker-capstone
         export YOLOX_HOME=/home/rahul/workspace/coursera-sdsc-words/udacity-aws-sagemaker-capstone/YOLOX
         ```
     -   ```bash
