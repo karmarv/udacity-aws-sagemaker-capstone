@@ -18,8 +18,8 @@ udacity AWS Sagemaker Tuutorial Capstone project
 ### A. Setup [Training Dataset](https://yolox.readthedocs.io/en/latest/train_custom_data.html)
 - Download the [mini coco128.zip dataset](https://github.com/karmarv/udacity-aws-sagemaker-capstone/tree/main/samples/coco128.zip)
 - Setup Dataset loader with `cyclist`,`person`,`bicycle` class
-    - Customize the [yolox/data/datasets/coco.py](https://github.com/Megvii-BaseDetection/YOLOX/blob/main/yolox/data/datasets/coco.py) to load the classess and images of interest [`/data/datasets/coco_cyclist.py`](./YOLOX/yolox/data/datasets/coco_cyclist.py)
-- Create experiment file to control data loading and model training [`/exps/default/yolox_nano_custom.py`](./YOLOX/exps/default/yolox_nano_custom.py)
+    - Customize the [yolox/data/datasets/coco.py](https://github.com/Megvii-BaseDetection/YOLOX/blob/main/yolox/data/datasets/coco.py) to load the classess and images of interest [`/data/datasets/coco_cyclist.py`](https://github.com/karmarv/YOLOX/blob/main/yolox/data/datasets/coco_custom.py)
+- Create experiment file to control data loading and model training [`/exps/default/yolox_nano_custom.py`](https://github.com/karmarv/YOLOX/blob/main/exps/default/yolox_nano_custom.py)
     - See get_data_loader, get_eval_loader, and get_evaluator for more details
 - Test
     -   ```bash
