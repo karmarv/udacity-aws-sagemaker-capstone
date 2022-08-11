@@ -21,11 +21,19 @@ udacity AWS Sagemaker Tuutorial Capstone project
     - Customize the [yolox/data/datasets/coco.py](https://github.com/Megvii-BaseDetection/YOLOX/blob/main/yolox/data/datasets/coco.py) to load the classess and images of interest [`/data/datasets/coco_cyclist.py`](https://github.com/karmarv/YOLOX/blob/main/yolox/data/datasets/coco_custom.py)
 - Create experiment file to control data loading and model training [`/exps/default/yolox_nano_custom.py`](https://github.com/karmarv/YOLOX/blob/main/exps/default/yolox_nano_custom.py)
     - See get_data_loader, get_eval_loader, and get_evaluator for more details
+- Generate sampled dataset with images for [`cyclist`,`person`,`bicycle`]
+    - Download COOCO dataset to $COCO_DATA_HOME folder
+    - Run the notebook [/samples/coco_sampler.ipynb](https://github.com/karmarv/udacity-aws-sagemaker-capstone/blob/main/samples/coco_sampler.ipynb)
+    - Drop the sampled data folder to YOLOX/datasets folder
+    - Configure the `/exps/default/yolox_nano_custom.py` with data_dir and json file paths
+    - Setup the num_classes=3
 - Test
     -   ```bash
         python -m yolox.tools.train -f ./exps/default/yolox_nano_custom.py -d 1 -b 8 --fp16  --logger wandb wandb-project yolox
         ```
-
+    -   ```bash
+        python tools/demo.py video -f ./exps/default/yolox_nano_custom.py -c ./YOLOX_outputs/yolox_nano_custom/best_ckpt.pth --path ../samples/cyclists.mp4 --conf 0.25 --nms 0.45 --tsize 640 --save_result --device gpu
+        ```
 
 ### Environment and Base YOLOX
 
