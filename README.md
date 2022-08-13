@@ -35,7 +35,7 @@ udacity AWS Sagemaker Tuutorial Capstone project
     - Yolox nano, batch 32, epoch 100
 - Tests
     -   ```bash
-        python tools/demo.py video -f ./exps/default/yolox_nano_custom.py -c ./YOLOX_outputs/yolox_nano_custom/best_ckpt.pth --path ../samples/cyclists.mp4 --conf 0.25 --nms 0.45 --tsize 640 --save_result --device gpu
+        python tools/demo_custom.py video -f ./exps/default/yolox_nano_custom.py -c ./YOLOX_outputs/yolox_nano_custom/best_ckpt.pth --path ../samples/data/test/bike-road.mp4 --conf 0.25 --nms 0.45 --tsize 640 --save_result --device gpu
         ```
 
 ### Environment and Base YOLOX
