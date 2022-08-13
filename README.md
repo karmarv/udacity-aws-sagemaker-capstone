@@ -27,10 +27,13 @@ udacity AWS Sagemaker Tuutorial Capstone project
     - Drop the sampled data folder to YOLOX/datasets folder
     - Configure the `/exps/default/yolox_nano_custom.py` with data_dir and json file paths
     - Setup the num_classes=3
-- Test
-    -   ```bash
-        python -m yolox.tools.train -f ./exps/default/yolox_nano_custom.py -d 1 -b 8 --fp16  --logger wandb wandb-project yolox
+- Experiments
+    - Yolox nano, batch 16, epoch 100   
+        ```bash
+        python -m yolox.tools.train -f ./exps/default/yolox_nano_custom.py --devices 1 --batch-size 16 --fp16  --logger wandb wandb-project yolox
         ```
+    - Yolox nano, batch 32, epoch 100
+- Tests
     -   ```bash
         python tools/demo.py video -f ./exps/default/yolox_nano_custom.py -c ./YOLOX_outputs/yolox_nano_custom/best_ckpt.pth --path ../samples/cyclists.mp4 --conf 0.25 --nms 0.45 --tsize 640 --save_result --device gpu
         ```

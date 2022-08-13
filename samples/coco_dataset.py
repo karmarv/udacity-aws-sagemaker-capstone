@@ -169,7 +169,7 @@ class COCODatasetCustom(Dataset):
         if do_update:
             categories, updated_annotations = self.update_anns(anno_id_max)
             print("New Annotations: {}/{}".format(len(updated_annotations), len(annotations)))
-            annotations.extend(updated_annotations)
+            annotations = updated_annotations
 
         anns_dict = { "categories": categories, "images": self.coco.loadImgs(image_ids), "annotations": annotations }
         print("Export {} annotations for {} images to -> {}".format(len(annotations), len(image_ids), out_filepath))
@@ -204,7 +204,7 @@ class COCODatasetCustom(Dataset):
     
     def update_anns(self, anno_id_max):
         # For the image annotations where person and bicycle have overlap
-        # Add a new category
+        # Update the annotated person category to cyclist
         cyclist_class_id = 101
         updated_categories = self.cats
         updated_categories.append({'supercategory': 'person', 'id': cyclist_class_id, 'name': 'cyclist'})
@@ -225,28 +225,36 @@ class COCODatasetCustom(Dataset):
             height = im_ann["height"]
             anno_ids = self.coco.getAnnIds(imgIds=[int(id_)], iscrowd=False)
             annotations = self.coco.loadAnns(anno_ids)
+            # Cleanup annotations
+            annotations_clean = []
+            for idx, obj in enumerate(annotations):
+                if obj["category_id"] in self.class_ids:
+                    obj.pop("segmentation", None)
+                    annotations_clean.append(obj)
+
             # Sample Person and compare if there are any IoU with bicycle
-            anno_idx_persons = [ idx for idx, obj in enumerate(annotations) if obj["category_id"]==1]
+            anno_idx_persons = [ idx for idx, obj in enumerate(annotations_clean) if obj["category_id"]==1]
             for idx_person in anno_idx_persons:
-                for idx, obj in enumerate(annotations):
+                for idx, obj in enumerate(annotations_clean):
                     obj["clean_bbox"] = get_bbox(obj, width, height)
                     if obj["category_id"] in self.class_ids and obj["area"] > 0:
                         if idx != idx_person and obj["category_id"]==2:
                             # Try to find IoU with Bicycles
-                            ann_person = annotations[idx_person]
+                            ann_person = annotations_clean[idx_person]
                             box_person = get_bbox(ann_person, width, height)
                             box_cycle = obj["clean_bbox"]
                             iou, bbox_union = self.bb_intersection_over_union(box_person, box_cycle)
-                            if iou > 0.25:
+                            if iou > 0.20:
                                 #print("({}.)\t IoU:{} \t Person:{}, \t Cycle:{}".format(obj["id"],iou, ann_person["id"], obj["id"]))                           
                                 # Append a new entry (high IoU) for this bicyclist=120
-                                new_ann = copy.deepcopy(ann_person)
-                                new_ann["clean_bbox"]  = bbox_union
-                                new_ann["bbox"]        = bbox_union
-                                new_ann["category_id"] = cyclist_class_id
-                                new_ann["id"]          = anno_id_max + idx
-                                updated_annotations.append(new_ann)
+                                #new_ann = copy.deepcopy(ann_person)
+                                #annotations[idx_person]["bbox"]        = box_person
+                                #annotations[idx_person]["clean_bbox"]  = get_bbox(ann_person)
+                                annotations_clean[idx_person]["category_id"] = cyclist_class_id
+                                #annotations[idx_person]["id"]          = anno_id_max + idx
+                                #updated_annotations.append(new_ann)
                                 #print("\tNew Annotation: ", new_ann)
+            updated_annotations.extend(annotations_clean)
         return updated_categories, updated_annotations
     
     
