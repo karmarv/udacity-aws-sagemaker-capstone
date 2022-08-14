@@ -44,7 +44,7 @@ AWS Sagemaker Tutorial Capstone project
 - Install [YoloX](https://github.com/Megvii-BaseDetection/YOLOX/)
     -   ```bash
         git clone --recurse-submodules https://github.com/karmarv/udacity-aws-sagemaker-capstone
-        export YOLOX_HOME=/home/rahul/workspace/coursera-sdsc-words/udacity-aws-sagemaker-capstone/YOLOX
+        export YOLOX_HOME=~/udacity-aws-sagemaker-capstone/YOLOX
         ```
     -   ```bash
         cd $YOLOX_HOME 
@@ -137,4 +137,10 @@ AWS Sagemaker Tutorial Capstone project
 
 > Attempts a video output from a YOLOX-nano model
 
+<video src='./samples/data/test/output/bike-kid.mp4' width=180/>
 
+## Visualize Training 
+
+> Track progress on W&B dashboard
+
+![Dashboard Image](./samples/data/test/output/wandb-dashboard.png?raw=true "Dashboard")
