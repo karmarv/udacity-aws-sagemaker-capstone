@@ -129,3 +129,4 @@ dmypy.json
 .pyre/
 
 samples/**/*.jpg
+!samples/data/test/output/biker1.jpg

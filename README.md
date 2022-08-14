@@ -1,54 +1,46 @@
 # Udacity AWS Sagemaker Capstone
-udacity AWS Sagemaker Tuutorial Capstone project
+AWS Sagemaker Tutorial Capstone project
 
+## Objective: Detect cyclist in an image using object detection vision task.
 
 
 ###  Tasks
 
-- [ ] Setup Dataset
-    - Sample 100 images for bicycle and person in image
-    - Use the same class_ids as in COCO_CLASSES. Provide additional class identifier or label `cyclist` where both exist with IoU>0.25. 
-    - Split it 70:20:10 in Train/Test/Val annotations
-- [ ] Training Loader updates
-- [ ] Train the model 
-- [ ] Test & Evaluate model
-- [ ] Write report
-- 
+- [x] Submitted [proposal](./report/proposal.pdf)
+- [x] Setup Dataset [coco-cyclist.zip](https://github.com/karmarv/udacity-aws-sagemaker-capstone/releases/download/alpha/coco-cyclist.zip)
+    - Sample ~1000 images for bicycle and person in image
+    - Use the same class_ids as in COCO_CLASSES. Provide additional class identifier label `cyclist` where both exist with IoU>0.25
+    - Split Train/Val annotations and create COCO dataset
+- [x] Training Loader updates in YOLOX (search for `_custom.py` in exps and yolox data/datasets folders)
+- [x] Train the model (YOLOX nano, small and medium)
+- [x] Test & Evaluate model [Weights & Bias Dashboard](https://wandb.ai/karmar/yolox?workspace=user-karmar)
+- [x] Write [report](./report/report.pdf)
 
-### A. Setup [Training Dataset](https://yolox.readthedocs.io/en/latest/train_custom_data.html)
-- Download the [mini coco128.zip dataset](https://github.com/karmarv/udacity-aws-sagemaker-capstone/tree/main/samples/coco128.zip)
-- Setup Dataset loader with `cyclist`,`person`,`bicycle` class
-    - Customize the [yolox/data/datasets/coco.py](https://github.com/Megvii-BaseDetection/YOLOX/blob/main/yolox/data/datasets/coco.py) to load the classess and images of interest [`/data/datasets/coco_cyclist.py`](https://github.com/karmarv/YOLOX/blob/main/yolox/data/datasets/coco_custom.py)
-- Create experiment file to control data loading and model training [`/exps/default/yolox_nano_custom.py`](https://github.com/karmarv/YOLOX/blob/main/exps/default/yolox_nano_custom.py)
-    - See get_data_loader, get_eval_loader, and get_evaluator for more details
+
+### A. Environment
+- Install [conda environment](https://docs.conda.io/projects/conda/en/latest/glossary.html#silent-mode-glossary)
+    -   ```bash
+        conda env remove -n cap
+        conda env create -n cap --file environment.yml --force
+        conda activate cap 
+        ```
+
+### B. Setup [Training Dataset](https://yolox.readthedocs.io/en/latest/train_custom_data.html)
+- Download the [Cyclist coco-cyclist.zip dataset](https://github.com/karmarv/udacity-aws-sagemaker-capstone/releases/download/alpha/coco-cyclist.zip) in case you want to skip the dataset creation step and jump to detector evaluation.
+    - unziop this data and then later move it to YOLOX dataset directory or create a soft link to this path.
 - Generate sampled dataset with images for [`cyclist`,`person`,`bicycle`]
     - Download COOCO dataset to $COCO_DATA_HOME folder
     - Run the notebook [/samples/coco_sampler.ipynb](https://github.com/karmarv/udacity-aws-sagemaker-capstone/blob/main/samples/coco_sampler.ipynb)
     - Drop the sampled data folder to YOLOX/datasets folder
     - Configure the `/exps/default/yolox_nano_custom.py` with data_dir and json file paths
     - Setup the num_classes=3
-- Experiments
-    - Yolox nano, batch 16, epoch 100   
-        ```bash
-        python -m yolox.tools.train -f ./exps/default/yolox_nano_custom.py --devices 1 --batch-size 16 --fp16  --logger wandb wandb-project yolox
-        ```
-    - Yolox medium, batch 4, epoch 200
-        ```bash 
-        python -m yolox.tools.train -f ./exps/default/yolox_m_custom.py --devices 1 --batch-size 4 --fp16  --logger wandb wandb-project yolox
-        ```
-- Tests
-    -   ```bash
-        python tools/demo_custom.py video -f ./exps/default/yolox_nano_custom.py -c ./YOLOX_outputs/yolox_nano_custom/best_ckpt.pth --path ../samples/data/test/bike-road.mp4 --conf 0.25 --nms 0.45 --tsize 640 --save_result --device gpu
-        ```
+- Visualize annotations with [FiftyOne tool](./samples/coco_fiftyone.py)
+    - `python coco_fiftyone.py`
 
-### Environment and Base YOLOX
 
-- Install [conda environment](https://docs.conda.io/projects/conda/en/latest/glossary.html#silent-mode-glossary)
-    -   ```bash
-        conda env remove -n cap
-        conda create --name cap python=3.7
-        conda activate cap 
-        ```
+
+### C. YOLOX Object Detector
+
 - Install [YoloX](https://github.com/Megvii-BaseDetection/YOLOX/)
     -   ```bash
         git clone --recurse-submodules https://github.com/karmarv/udacity-aws-sagemaker-capstone
@@ -65,6 +57,10 @@ udacity AWS Sagemaker Tuutorial Capstone project
         pip install tensorboard
         wandb login
         ```
+- Setup Dataset loader with `cyclist`,`person`,`bicycle` class
+    - Customize the [yolox/data/datasets/coco.py](https://github.com/Megvii-BaseDetection/YOLOX/blob/main/yolox/data/datasets/coco.py) to load the classess and images of interest [`/data/datasets/coco_cyclist.py`](https://github.com/karmarv/YOLOX/blob/main/yolox/data/datasets/coco_custom.py)
+- Create experiment file to control data loading and model training [`/exps/default/yolox_nano_custom.py`](https://github.com/karmarv/YOLOX/blob/main/exps/default/yolox_nano_custom.py)
+    - See get_data_loader, get_eval_loader, and get_evaluator for more details
 - Demo Test for Image - [Documentation](https://yolox.readthedocs.io/en/latest/quick_run.html)
     -   ```bash
         python tools/demo.py image -f ./exps/default/yolox_nano.py -c ./yolox_nano.pth --path ../samples/biker1.jpg --conf 0.25 --nms 0.45 --tsize 640 --save_result --device gpu
@@ -72,21 +68,22 @@ udacity AWS Sagemaker Tuutorial Capstone project
     -   ```bash
         python tools/demo.py video -f ./exps/default/yolox_nano.py -c ./yolox_nano.pth --path ../samples/cyclists.mp4 --conf 0.25 --nms 0.45 --tsize 640 --save_result --device gpu
         ```
-- Dataset [MSCOCO for Detection 2017](https://cocodataset.org/#download)
-    - Download `Detection 2017` Train/Test/Val annotation and images dataset
+- Dataset [Created `cyclist` for Detection 2017](https://cocodataset.org/#download)
+    - Download `COCO Cyclist` Train/Val annotation and images dataset
+        - Link: https://github.com/karmarv/udacity-aws-sagemaker-capstone/releases/download/alpha/coco-cyclist.zip 
     -   ```bash
-        COCO/
+        cocobi/
             annotations/*.json           # contains annotation label as instances_{train,val}2017.json
             {train,val}2017/*.jpg        # contains image files that are mentioned in the corresponding json
         ```
     -   ```bash
-        export COCO_HOME=/media/rahul/HIT-GRAID/data/coco
+        export COCO_HOME=~/data/cocobi
         ```
 - Train setup test
     -   ```bash
         cd $YOLOX_HOME
-        ln -s $COCO_HOME ./datasets/COCO
-        python -m yolox.tools.train -f ./exps/default/yolox_nano.py -d 1 -b 8 --fp16  --logger wandb wandb-project yolox
+        ln -s $COCO_HOME ./datasets/cocobi
+        python -m yolox.tools.train -f ./exps/default/yolox_nano_custom.py -d 1 -b 8 --fp16  --logger wandb wandb-project yolox
         ```
     -   ```bash 
         2022-08-07 20:22:27 | INFO     | yolox.core.trainer:137 - Model Summary: Params: 0.91M, Gflops: 1.11
@@ -117,3 +114,27 @@ udacity AWS Sagemaker Tuutorial Capstone project
         2022-08-07 21:16:44 | INFO     | yolox.core.trainer:261 - epoch: 2/300, iter: 10/14786, mem: 1708Mb, iter_time: 0.222s, data_time: 0.108s, total_loss: 11.5, iou_loss: 3.8, l1_loss: 0.0, conf_loss: 5.2, cls_loss: 2.4, lr: 5.007e-05, size: 512, ETA: 11 days, 0:55:22
         ...
         ```
+- Tests
+    -   ```bash
+        python tools/demo_custom.py video -f ./exps/default/yolox_nano_custom.py -c ./YOLOX_outputs/yolox_nano_custom/best_ckpt.pth --path ../samples/data/test/bike-road.mp4 --conf 0.25 --nms 0.45 --tsize 640 --save_result --device gpu
+        ```
+
+- Expected Experiments
+    - Yolox nano, batch 16, epoch 100   
+        ```bash
+        python -m yolox.tools.train -f ./exps/default/yolox_nano_custom.py --devices 1 --batch-size 16 --fp16  --logger wandb wandb-project yolox
+        ```
+    - Yolox medium, batch 4, epoch 200
+        ```bash 
+        python -m yolox.tools.train -f ./exps/default/yolox_m_custom.py --devices 1 --batch-size 4 --fp16  --logger wandb wandb-project yolox
+        ```
+
+## Sample Result
+
+> Biker image output from a YOLOX-nano model 
+
+![Biker Image](./samples/data/test/output/biker1.jpg?raw=true "Detected Biker")
+
+> Attempts a video output from a YOLOX-nano model
+
+
