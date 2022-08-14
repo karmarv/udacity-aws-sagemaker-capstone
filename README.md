@@ -32,7 +32,10 @@ udacity AWS Sagemaker Tuutorial Capstone project
         ```bash
         python -m yolox.tools.train -f ./exps/default/yolox_nano_custom.py --devices 1 --batch-size 16 --fp16  --logger wandb wandb-project yolox
         ```
-    - Yolox nano, batch 32, epoch 100
+    - Yolox medium, batch 4, epoch 200
+        ```bash 
+        python -m yolox.tools.train -f ./exps/default/yolox_m_custom.py --devices 1 --batch-size 4 --fp16  --logger wandb wandb-project yolox
+        ```
 - Tests
     -   ```bash
         python tools/demo_custom.py video -f ./exps/default/yolox_nano_custom.py -c ./YOLOX_outputs/yolox_nano_custom/best_ckpt.pth --path ../samples/data/test/bike-road.mp4 --conf 0.25 --nms 0.45 --tsize 640 --save_result --device gpu
