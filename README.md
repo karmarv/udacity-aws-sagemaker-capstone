@@ -137,10 +137,11 @@ AWS Sagemaker Tutorial Capstone project
 
 > Attempts a video output from a YOLOX-nano model
 
-<video src='./samples/data/test/output/bike-kid.mp4' width=180/>
+![Biker Video](./samples/data/test/output/bike-kid.mp4?raw=true "Detected Biker Video")
 
 ## Visualize Training 
 
 > Track progress on W&B dashboard
 
 ![Dashboard Image](./samples/data/test/output/wandb-dashboard.png?raw=true "Dashboard")
+
